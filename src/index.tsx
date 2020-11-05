@@ -16,13 +16,13 @@ class VoiceProcessor{
   }
 
   start(callback:(audioBuffer:number[])=>void){        
-    RCTVoiceProcessor.start(this._frameLength, this._sampleRate);
-    this._audioBufferListener = this._audioBufferEmitter.addListener("audioBuffer", callback);
+    this._audioBufferListener = this._audioBufferEmitter.addListener("audioBufferAvailable", callback);
+    RCTVoiceProcessor.start(this._frameLength, this._sampleRate);    
   }
 
   stop(){
-    this._audioBufferListener.remove();
     RCTVoiceProcessor.stop();    
+    this._audioBufferListener.remove();    
   }
 
 }

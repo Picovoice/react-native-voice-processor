@@ -43,17 +43,14 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule{
     @ReactMethod
     public void start(Integer frameSize, Integer sampleRate) {
         
-        Log.d(LOG_TAG, "start1");       
         if (started.get()) {
             return;
-        }
-        Log.d(LOG_TAG, "start2");
+        }        
         started.set(true);
 
         Executors.newSingleThreadExecutor().submit(new Callable<Void>() {
             @Override
-            public Void call() {
-                Log.d(LOG_TAG, "start3");
+            public Void call() {         
                 android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
                 read(frameSize, sampleRate);
                 return null;
@@ -109,7 +106,7 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule{
                     WritableArray wArray = Arguments.createArray();
                     for(int i = 0; i<buffer.length; i++)
                         wArray.pushInt(buffer[i]);
-                    this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("audioBuffer", wArray); 
+                    this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("audioBufferAvailable", wArray); 
                 }
             }
             

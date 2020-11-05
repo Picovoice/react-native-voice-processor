@@ -23,7 +23,7 @@ export default class App extends Component<Props, State>{
     if (Platform.OS == 'android') {
       recordAudioRequest = this._requestRecordAudioPermission();
     } else {
-      recordAudioRequest = new Promise(function (resolve, reject) { resolve(true); });
+      recordAudioRequest = new Promise(function (resolve, _) { resolve(true); });
     }
 
     recordAudioRequest.then((hasPermission) => {
