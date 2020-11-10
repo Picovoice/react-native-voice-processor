@@ -17,6 +17,8 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class VoiceProcessorModule extends ReactContextBaseJavaModule{
     
     private static final String LOG_TAG = "VoiceProcessorModule";
+    private static final String BUFFER_EMITTER_KEY = "buffer_sent";
     private final ReactApplicationContext context;
 
     private AtomicBoolean started = new AtomicBoolean(false);
@@ -33,6 +36,13 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule{
     @Override
     public String getName() {
         return "VoiceProcessor";
+    }
+
+    @Override
+    public Map<String, Object> getConstants() {
+        final Map<String, Object> constants = new HashMap<>();
+        constants.put("BUFFER_EMITTER_KEY", BUFFER_EMITTER_KEY);
+        return constants;
     }
 
     public VoiceProcessorModule(ReactApplicationContext reactContext) {
@@ -106,7 +116,8 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule{
                     WritableArray wArray = Arguments.createArray();
                     for(int i = 0; i<buffer.length; i++)
                         wArray.pushInt(buffer[i]);
-                    this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("audioBufferAvailable", wArray); 
+                    this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                        .emit(BUFFER_EMITTER_KEY, wArray); 
                 }
             }
             

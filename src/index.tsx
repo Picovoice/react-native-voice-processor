@@ -1,30 +1,25 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeModules } from 'react-native';
 
 const RCTVoiceProcessor = NativeModules.VoiceProcessor;
+export type BufferCallbackType = (buffer: number[]) => void;
+export const BufferEmitter = RCTVoiceProcessor;
 
-class VoiceProcessor{
+class VoiceProcessor {
+  private _samplesPerBuffer: number;
+  private _sampleRate: number;
 
-  private _audioBufferEmitter = new NativeEventEmitter(RCTVoiceProcessor);
-  private _audioBufferListener : any;
-
-  private _frameLength:number;
-  private _sampleRate:number;
-
-  constructor(frameLength:number, sampleRate:number){
-    this._frameLength = frameLength;
+  constructor(samplesPerBuffer: number, sampleRate: number) {
+    this._samplesPerBuffer = samplesPerBuffer;
     this._sampleRate = sampleRate;
   }
 
-  start(callback:(audioBuffer:number[])=>void){        
-    this._audioBufferListener = this._audioBufferEmitter.addListener("audioBufferAvailable", callback);
-    RCTVoiceProcessor.start(this._frameLength, this._sampleRate);    
+  start() {
+    RCTVoiceProcessor.start(this._samplesPerBuffer, this._sampleRate);
   }
 
-  stop(){
-    RCTVoiceProcessor.stop();    
-    this._audioBufferListener.remove();    
+  stop() {
+    RCTVoiceProcessor.stop();
   }
-
 }
 
-export default VoiceProcessor;
+export { VoiceProcessor };
