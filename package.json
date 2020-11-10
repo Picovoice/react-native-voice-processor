@@ -32,15 +32,17 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "audio",
+    "speech recognition"
   ],
-  "repository": "https://github.com/laves/react-native-voice-processor",
-  "author": "Picovoice <ian@picovoice.ai> (https://github.com/laves)",
-  "license": "MIT",
+  "repository": "https://github.com/Picovoice/react-native-voice-processor",
+  "author": "Picovoice <hello@picovoice.ai> (https://github.com/Picovoice)",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/laves/react-native-voice-processor/issues"
+    "url": "https://github.com/Picovoice/react-native-voice-processor/issues"
   },
-  "homepage": "https://github.com/laves/react-native-voice-processor#readme",
+  "homepage": "https://github.com/Picovoice/react-native-voice-processor#readme",
   "devDependencies": {
     "@commitlint/config-conventional": "^8.3.4",
     "@react-native-community/bob": "^0.16.2",

@@ -4,6 +4,7 @@ import AVFoundation
 class VoiceProcessor: RCTEventEmitter {
 
     private let audioInputEngine: AudioInputEngine = AudioInputEngine()
+    private let BUFFER_EMITTER_KEY = "buffer_sent"
     private var isListening = false
     
     public override init() {        
@@ -11,7 +12,13 @@ class VoiceProcessor: RCTEventEmitter {
     }
 
     override func supportedEvents() -> [String]! {
-      return ["audioBufferAvailable"]
+      return [self.BUFFER_EMITTER_KEY]
+    }
+
+    @objc override func constantsToExport() -> [AnyHashable : Any] {        
+        return [
+            "BUFFER_EMITTER_KEY": self.BUFFER_EMITTER_KEY
+        ]
     }
 
     @objc(start:sampleRate:)
@@ -27,14 +34,14 @@ class VoiceProcessor: RCTEventEmitter {
             guard let `self` = self else {
                 return
             }
-            
-            
+                        
             let buffer = UnsafeBufferPointer(start: audio, count: frameLength);            
-            self.sendEvent(withName: "audioBufferAvailable", body: Array(buffer))
+            self.sendEvent(withName: self.BUFFER_EMITTER_KEY, body: Array(buffer))
         }
 
         let audioSession = AVAudioSession.sharedInstance()        
         if audioSession.recordPermission == .denied {
+            NSLog("Recording permissions denied")
             return;
         }                
         
