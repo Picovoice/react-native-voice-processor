@@ -1,20 +1,20 @@
 import { NativeModules } from 'react-native';
 
-const RCTVoiceProcessor = NativeModules.VoiceProcessor;
+const RCTVoiceProcessor = NativeModules.PvVoiceProcessor;
 export type BufferCallbackType = (buffer: number[]) => void;
 export const BufferEmitter = RCTVoiceProcessor;
 
 class VoiceProcessor {
-  private _samplesPerBuffer: number;
+  private _frameLength: number;
   private _sampleRate: number;
 
-  constructor(samplesPerBuffer: number, sampleRate: number) {
-    this._samplesPerBuffer = samplesPerBuffer;
+  constructor(frameLength: number, sampleRate: number) {
+    this._frameLength = frameLength;
     this._sampleRate = sampleRate;
   }
 
   start() {
-    RCTVoiceProcessor.start(this._samplesPerBuffer, this._sampleRate);
+    RCTVoiceProcessor.start(this._frameLength, this._sampleRate);
   }
 
   stop() {

@@ -1,7 +1,7 @@
 import AVFoundation
 
-@objc(VoiceProcessor)
-class VoiceProcessor: RCTEventEmitter {
+@objc(PvVoiceProcessor)
+class PvVoiceProcessor: RCTEventEmitter {
 
     private let audioInputEngine: AudioInputEngine = AudioInputEngine()
     private let BUFFER_EMITTER_KEY = "buffer_sent"

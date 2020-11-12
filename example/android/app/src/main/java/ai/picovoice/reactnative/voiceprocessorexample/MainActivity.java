@@ -1,4 +1,4 @@
-package ai.picovoice.reactnativevoiceprocessordemo;
+package ai.picovoice.reactnative.voiceprocessorexample;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "VoiceProcessorExample";
+    return "PvVoiceProcessorExample";
   }
 }

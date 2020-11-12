@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="ai.picovoice.reactnativevoiceprocessordemo">
-
-    <uses-permission android:name="android.permission.INTERNET" />
+  package="ai.picovoice.reactnative.voiceprocessorexample">
+    
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application

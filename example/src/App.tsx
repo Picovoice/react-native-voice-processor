@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import { Button, PermissionsAndroid, Platform } from 'react-native';
-import { StyleSheet, View, EventSubscription, NativeEventEmitter } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  EventSubscription,
+  NativeEventEmitter,
+} from 'react-native';
 import { VoiceProcessor, BufferEmitter } from 'react-native-voice-processor';
 
 type Props = {};
 type State = {};
 
 export default class App extends Component<Props, State> {
-  
   _bufferListener?: EventSubscription;
   _bufferEmitter: NativeEventEmitter;
   _voiceProcessor: VoiceProcessor;
-  
+
   constructor(props: Props) {
     super(props);
 
@@ -19,8 +23,8 @@ export default class App extends Component<Props, State> {
     this._bufferEmitter = new NativeEventEmitter(BufferEmitter);
     this._bufferListener = this._bufferEmitter.addListener(
       BufferEmitter.BUFFER_EMITTER_KEY,
-      async (buffer: number[]) => {        
-        console.log(`Buffer of size ${buffer.length} received!`)
+      async (buffer: number[]) => {
+        console.log(`Buffer of size ${buffer.length} received!`);
       }
     );
   }
@@ -56,7 +60,7 @@ export default class App extends Component<Props, State> {
         {
           title: 'Microphone Permission',
           message:
-            'ExampleApp needs access to your microphone to test react-native-audio-toolkit.',
+            'VoiceProcessorExample needs your permission to receive audio buffers.',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
@@ -76,10 +80,10 @@ export default class App extends Component<Props, State> {
   render() {
     return (
       <View style={styles.container}>
-        <View>
+        <View style={{ margin: 5 }}>
           <Button title="Start" onPress={() => this._startProcessing()} />
         </View>
-        <View>
+        <View style={{ margin: 5 }}>
           <Button title="Stop" onPress={() => this._stopProcessing()} />
         </View>
       </View>
@@ -90,6 +94,7 @@ export default class App extends Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },

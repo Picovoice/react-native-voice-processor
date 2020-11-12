@@ -127,7 +127,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "ai.picovoice.reactnativevoiceprocessordemo"
+        applicationId "ai.picovoice.reactnative.voiceprocessorexample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
