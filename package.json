@@ -1,24 +1,12 @@
 {
-  "name": "react-native-voice-processor",
-  "version": "0.1.0",
+  "name": "@picovoice/react-native-voice-processor",
+  "version": "1.0.0",
   "description": "A library for real-time voice processing in React Native.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
-  "files": [
-    "src",
-    "lib",
-    "android",
-    "ios",
-    "cpp",
-    "react-native-voice-processor.podspec",
-    "!lib/typescript/example",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__"
-  ],
   "scripts": {
     "test": "jest",
     "typescript": "tsc --noEmit",
@@ -37,7 +25,7 @@
     "speech recognition"
   ],
   "repository": "https://github.com/Picovoice/react-native-voice-processor",
-  "author": "Picovoice <hello@picovoice.ai> (https://github.com/Picovoice)",
+  "author": "Picovoice <hello@picovoice.ai> (https://picovoice.ai)",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/Picovoice/react-native-voice-processor/issues"
@@ -115,7 +103,10 @@
       ]
     }
   },
-  "eslintIgnore": ["node_modules/", "lib/"],
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
   "prettier": {
     "quoteProps": "consistent",
     "singleQuote": true,
@@ -127,9 +118,10 @@
     "source": "src",
     "output": "lib",
     "targets": [
-      "commonjs", 
-      "module", 
+      "commonjs",
+      "module",
       "typescript"
-    ]    
-  }
+    ]
+  },
+  "dependencies": {}
 }
