@@ -10,7 +10,11 @@
 //
 
 import React, { Component } from 'react';
-import { Button, PermissionsAndroid, Platform } from 'react-native';
+import {
+  Button,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
 import {
   StyleSheet,
   View,
@@ -20,17 +24,24 @@ import {
 import { VoiceProcessor, BufferEmitter } from 'react-native-voice-processor';
 
 type Props = {};
-type State = {};
+type State = {
+  isListening: boolean;
+  buttonText: string;
+  buttonDisabled: boolean;  
+};
 
 export default class App extends Component<Props, State> {
-  _bufferListener?: EventSubscription;
-  _bufferEmitter: NativeEventEmitter;
-  _voiceProcessor: VoiceProcessor;
+  _bufferListener?: EventSubscription;  
+  _bufferEmitter: NativeEventEmitter;  
 
   constructor(props: Props) {
     super(props);
-
-    this._voiceProcessor = new VoiceProcessor(512, 16000);
+    this.state = {
+      buttonText: 'Start',
+      isListening: false,
+      buttonDisabled: false
+    };
+    
     this._bufferEmitter = new NativeEventEmitter(BufferEmitter);
     this._bufferListener = this._bufferEmitter.addListener(
       BufferEmitter.BUFFER_EMITTER_KEY,
@@ -38,6 +49,7 @@ export default class App extends Component<Props, State> {
         console.log(`Buffer of size ${buffer.length} received!`);
       }
     );
+
   }
   componentDidMount() {}
 
@@ -53,15 +65,44 @@ export default class App extends Component<Props, State> {
 
     recordAudioRequest.then((hasPermission) => {
       if (!hasPermission) {
+        console.error("Did not grant required microphone permission.")
         return;
       }
-
-      this._voiceProcessor.start();
+      
+      VoiceProcessor.getVoiceProcessor(512, 16000).start().then((didStart) =>{
+        if(didStart){
+          this.setState({          
+            isListening: true,
+            buttonText: "Stop",
+            buttonDisabled: false
+          });
+        }      
+      });      
     });
   }
 
-  _stopProcessing() {
-    this._voiceProcessor.stop();
+  _stopProcessing() {    
+    VoiceProcessor.getVoiceProcessor(512, 16000).stop().then((didStop) =>{
+      if(didStop){
+        this.setState({                      
+          isListening: false,
+          buttonText: "Start",
+          buttonDisabled: false
+        });
+      }
+    });
+  }
+
+  _toggleProcessing() {
+    this.setState({
+      buttonDisabled: true
+    })
+
+    if (this.state.isListening) {
+      this._stopProcessing();
+    } else {
+      this._startProcessing();
+    }
   }
 
   async _requestRecordAudioPermission() {
@@ -92,10 +133,11 @@ export default class App extends Component<Props, State> {
     return (
       <View style={styles.container}>
         <View style={{ margin: 5 }}>
-          <Button title="Start" onPress={() => this._startProcessing()} />
-        </View>
-        <View style={{ margin: 5 }}>
-          <Button title="Stop" onPress={() => this._stopProcessing()} />
+          <Button
+            title={this.state.buttonText}
+            disabled={this.state.buttonDisabled}
+            onPress={() => this._toggleProcessing()}
+          />
         </View>
       </View>
     );

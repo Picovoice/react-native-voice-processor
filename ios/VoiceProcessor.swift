@@ -3,7 +3,7 @@ import AVFoundation
 @objc(PvVoiceProcessor)
 class PvVoiceProcessor: RCTEventEmitter {
 
-    private let audioInputEngine: AudioInputEngine = AudioInputEngine()
+    private let audioInputEngine: AudioInputEngine = AudioInputEngine()        
     private let BUFFER_EMITTER_KEY = "buffer_sent"
     private var isListening = false
     
