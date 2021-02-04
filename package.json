@@ -1,6 +1,6 @@
 {
   "name": "@picovoice/react-native-voice-processor",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A library for real-time voice processing in React Native.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
