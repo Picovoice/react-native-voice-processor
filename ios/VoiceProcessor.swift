@@ -83,6 +83,13 @@ class PvVoiceProcessor: RCTEventEmitter {
             return
         }
         
+        do {
+            try AVAudioSession.sharedInstance().setActive(false)
+        }
+        catch {
+            NSLog("Unable to explicitly deactivate AVAudioSession: \(error)");
+        }
+        
         self.audioInputEngine.stop()
         
         isListening = false
