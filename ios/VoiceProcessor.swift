@@ -62,8 +62,8 @@ class PvVoiceProcessor: RCTEventEmitter {
         }                
         
         do{
-            try audioSession.setCategory(AVAudioSession.Category.record)
-            try audioSession.setMode(AVAudioSession.Mode.measurement)
+            try audioSession.setCategory(AVAudioSession.Category.playAndRecord, options: [.mixWithOthers, .defaultToSpeaker, .allowBluetooth])
+            try audioSession.setMode(AVAudioSession.Mode.voiceChat)
             try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
             
             try audioInputEngine.start(frameLength:frameLength, sampleRate:sampleRate)
