@@ -1,5 +1,5 @@
 //
-// Copyright 2020 Picovoice Inc.
+// Copyright 2020-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -14,11 +14,11 @@
 
 @interface RCT_EXTERN_MODULE(PvVoiceProcessor, RCTEventEmitter)
 
-RCT_EXTERN_METHOD(start:(int)frameSize 
+RCT_EXTERN_METHOD(start:(int)frameSize
                   sampleRate:(int)sampleRate
-                  resolver: (RCTPromiseResolveBlock)resolve 
+                  resolver: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(stop: (RCTPromiseResolveBlock)resolve 
+RCT_EXTERN_METHOD(stop: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
 
 @end

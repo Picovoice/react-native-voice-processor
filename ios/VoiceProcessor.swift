@@ -1,5 +1,5 @@
 //
-// Copyright 2020 Picovoice Inc.
+// Copyright 2020-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -14,11 +14,11 @@ import AVFoundation
 @objc(PvVoiceProcessor)
 class PvVoiceProcessor: RCTEventEmitter {
 
-    private let audioInputEngine: AudioInputEngine = AudioInputEngine()        
+    private let audioInputEngine: AudioInputEngine = AudioInputEngine()
     private let BUFFER_EMITTER_KEY = "buffer_sent"
     private var isListening = false
-    
-    public override init() {        
+
+    public override init() {
         super.init()
     }
 
@@ -29,8 +29,8 @@ class PvVoiceProcessor: RCTEventEmitter {
     override static func requiresMainQueueSetup() -> Bool {
         return true
     }
-    
-    @objc override func constantsToExport() -> [AnyHashable : Any] {        
+
+    @objc override func constantsToExport() -> [AnyHashable : Any] {
         return [
             "BUFFER_EMITTER_KEY": self.BUFFER_EMITTER_KEY
         ]
@@ -39,31 +39,31 @@ class PvVoiceProcessor: RCTEventEmitter {
     @objc(start:sampleRate:resolver:rejecter:)
     func start(frameLength: Int, sampleRate: Int,
                resolver resolve:RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        
+
         guard !isListening else {
             NSLog("Audio engine already running.");
             return
         }
-        
+
         audioInputEngine.audioInput = { [weak self] audio in
-            
+
             guard let `self` = self else {
                 return
             }
-                        
-            let buffer = UnsafeBufferPointer(start: audio, count: frameLength);            
+
+            let buffer = UnsafeBufferPointer(start: audio, count: frameLength);
             self.sendEvent(withName: self.BUFFER_EMITTER_KEY, body: Array(buffer))
         }
 
-        let audioSession = AVAudioSession.sharedInstance()        
+        let audioSession = AVAudioSession.sharedInstance()
         if audioSession.recordPermission == .denied {
             NSLog("Recording permissions denied")
             return;
-        }                
-        
+        }
+
         do{
             try audioSession.setCategory(AVAudioSession.Category.playAndRecord, options: [.mixWithOthers, .defaultToSpeaker, .allowBluetooth])
-            
+
             try audioInputEngine.start(frameLength:frameLength, sampleRate:sampleRate)
         }
         catch{
@@ -82,7 +82,7 @@ class PvVoiceProcessor: RCTEventEmitter {
         }
 
         self.audioInputEngine.stop()
-        
+
         isListening = false
         resolve(true)
     }
@@ -90,9 +90,9 @@ class PvVoiceProcessor: RCTEventEmitter {
     private class AudioInputEngine {
         private let numBuffers = 3
         private var audioQueue: AudioQueueRef?
-        
+
         var audioInput: ((UnsafePointer<Int16>) -> Void)?
-        
+
         func start(frameLength:Int, sampleRate:Int) throws {
             var format = AudioStreamBasicDescription(
                 mSampleRate: Float64(sampleRate),
@@ -106,11 +106,11 @@ class PvVoiceProcessor: RCTEventEmitter {
                 mReserved: 0)
             let userData = UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())
             AudioQueueNewInput(&format, createAudioQueueCallback(), userData, nil, nil, 0, &audioQueue)
-            
+
             guard let queue = audioQueue else {
                 return
             }
-            
+
             let bufferSize = UInt32(frameLength) * 2
             for _ in 0..<numBuffers {
                 var bufferRef: AudioQueueBufferRef? = nil
@@ -119,10 +119,10 @@ class PvVoiceProcessor: RCTEventEmitter {
                     AudioQueueEnqueueBuffer(queue, buffer, 0, nil)
                 }
             }
-            
+
             AudioQueueStart(queue, nil)
         }
-        
+
         func stop() {
             guard let audioQueue = audioQueue else {
                 return
@@ -132,22 +132,22 @@ class PvVoiceProcessor: RCTEventEmitter {
             AudioQueueDispose(audioQueue, true)
             audioInput = nil
         }
-        
+
         private func createAudioQueueCallback() -> AudioQueueInputCallback {
             return { userData, queue, bufferRef, startTimeRef, numPackets, packetDescriptions in
-                
+
                 // `self` is passed in as userData in the audio queue callback.
                 guard let userData = userData else {
                     return
                 }
                 let `self` = Unmanaged<AudioInputEngine>.fromOpaque(userData).takeUnretainedValue()
-                
+
                 let pcm = bufferRef.pointee.mAudioData.assumingMemoryBound(to: Int16.self)
-                
+
                 if let audioInput = self.audioInput {
                     audioInput(pcm)
                 }
-                
+
                 AudioQueueEnqueueBuffer(queue, bufferRef, 0, nil)
             }
         }

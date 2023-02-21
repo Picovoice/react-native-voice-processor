@@ -1,5 +1,5 @@
 //
-// Copyright 2020 Picovoice Inc.
+// Copyright 2020-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -10,6 +10,8 @@
 //
 
 package ai.picovoice.reactnative.voiceprocessor;
+
+import androidx.annotation.NonNull;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -23,6 +25,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.HashMap;
@@ -31,7 +34,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@ReactModule(name = VoiceProcessorModule.NAME)
 public class VoiceProcessorModule extends ReactContextBaseJavaModule {
+  public static final String NAME = "PvVoiceProcessor";
 
   private static final String LOG_TAG = "PicovoiceVoiceProcessorModule";
   private static final String BUFFER_EMITTER_KEY = "buffer_sent";
@@ -47,13 +52,20 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule {
   }
 
   @Override
+  @NonNull
   public String getName() {
-    return "PvVoiceProcessor";
+    return NAME;
   }
+
+  @ReactMethod
+  public void addListener(String eventName) { }
+
+  @ReactMethod
+  public void removeListeners(Integer count) { }
 
   @Override
   public Map<String, Object> getConstants() {
-    final Map<String, Object> constants = new HashMap<>();    
+    final Map<String, Object> constants = new HashMap<>();
     constants.put("BUFFER_EMITTER_KEY", BUFFER_EMITTER_KEY);
     return constants;
   }
@@ -78,7 +90,7 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule {
       try {
         Thread.sleep(10);
       } catch (InterruptedException e) {
-        Log.e(LOG_TAG, e.toString());        
+        Log.e(LOG_TAG, e.toString());
       }
     }
 
@@ -97,13 +109,13 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule {
       try {
         Thread.sleep(10);
       } catch (InterruptedException e) {
-        Log.e(LOG_TAG, e.toString());        
+        Log.e(LOG_TAG, e.toString());
       }
     }
 
     started.set(false);
     stop.set(false);
-    stopped.set(false);    
+    stopped.set(false);
     promise.resolve(true);
   }
 
@@ -126,10 +138,10 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule {
         bufferSize);
 
       audioRecord.startRecording();
-      boolean firstBuffer = true;      
+      boolean firstBuffer = true;
       while (!stop.get()) {
-        if (audioRecord.read(buffer, 0, buffer.length) == buffer.length) {          
-          if(firstBuffer){            
+        if (audioRecord.read(buffer, 0, buffer.length) == buffer.length) {
+          if(firstBuffer){
             started.set(true);
             firstBuffer = false;
           }
@@ -142,8 +154,8 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule {
       }
 
       audioRecord.stop();
-    } catch (IllegalArgumentException | IllegalStateException e) {      
-      throw e;      
+    } catch (IllegalArgumentException | IllegalStateException e) {
+      throw e;
     } finally {
       if (audioRecord != null) {
         audioRecord.release();
