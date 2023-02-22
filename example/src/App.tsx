@@ -108,7 +108,7 @@ export default class App extends Component<Props, State> {
   async _requestRecordAudioPermission() {
     try {
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO!,
         {
           title: 'Microphone Permission',
           message:
@@ -128,7 +128,7 @@ export default class App extends Component<Props, State> {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ margin: 5 }}>
+        <View style={styles.subContainer}>
           <Button
             title={this.state.buttonText}
             disabled={this.state.buttonDisabled}
@@ -146,5 +146,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  subContainer: {
+    margin: 5,
   },
 });
