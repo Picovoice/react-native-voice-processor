@@ -1,0 +1,47 @@
+name: RNVP Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '**'
+      - '!README.md'
+  pull_request:
+    branches: [ main, 'v[0-9]+.[0-9]+' ]
+    paths:
+      - '**'
+      - '!README.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [lts/*]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Pre-build dependencies
+        run: npm install yarn
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: build
+        run: yarn build
+
+      - name: bootstrap examples
+        run: yarn bootstrap
+
+      - name: lint
+        run: yarn typecheck && yarn lint
