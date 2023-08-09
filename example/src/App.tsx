@@ -10,14 +10,10 @@
 //
 
 import React, { Component } from 'react';
-import { Button, PermissionsAndroid, Platform } from 'react-native';
-import {
-  StyleSheet,
-  View,
-  EventSubscription,
-  NativeEventEmitter,
-} from 'react-native';
-import { VoiceProcessor, BufferEmitter } from 'react-native-voice-processor';
+import { Button } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { VoiceProcessor } from 'react-native-voice-processor';
+import type { VoiceProcessorError } from 'react-native-voice-processor';
 
 type Props = {};
 type State = {
@@ -27,8 +23,10 @@ type State = {
 };
 
 export default class App extends Component<Props, State> {
-  _bufferListener?: EventSubscription;
-  _bufferEmitter: NativeEventEmitter;
+  private readonly _frameLength: number = 512;
+  private readonly _sampleRate: number = 16000;
+
+  private _voiceProcessor: VoiceProcessor;
 
   constructor(props: Props) {
     super(props);
@@ -38,90 +36,55 @@ export default class App extends Component<Props, State> {
       buttonDisabled: false,
     };
 
-    this._bufferEmitter = new NativeEventEmitter(BufferEmitter);
-    this._bufferListener = this._bufferEmitter.addListener(
-      BufferEmitter.BUFFER_EMITTER_KEY,
-      async (buffer: number[]) => {
-        console.log(`Buffer of size ${buffer.length} received!`);
-      }
-    );
+    this._voiceProcessor = VoiceProcessor.instance;
+    this._voiceProcessor.addFrameListener((frame: number[]) => {
+      console.log(`Received a frame with size ${frame.length}`);
+    });
+    this._voiceProcessor.addErrorListener((error: VoiceProcessorError) => {
+      console.error(`Error listener triggered: ${error}`);
+    });
   }
 
   componentDidMount() {}
 
-  _startProcessing() {
-    let recordAudioRequest;
-    if (Platform.OS === 'android') {
-      recordAudioRequest = this._requestRecordAudioPermission();
-    } else {
-      recordAudioRequest = new Promise(function (resolve, _) {
-        resolve(true);
+  async _startProcessing() {
+    try {
+      if (await this._voiceProcessor.hasRecordAudioPermission()) {
+        await this._voiceProcessor.start(this._frameLength, this._sampleRate);
+        this.setState({
+          isListening: await this._voiceProcessor.isRecording(),
+          buttonText: 'Stop',
+          buttonDisabled: false,
+        });
+      } else {
+        console.error(Error('User did not grant permission to record audio.'));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async _stopProcessing() {
+    try {
+      await this._voiceProcessor.stop();
+    } catch (e) {
+      this.setState({
+        isListening: false,
+        buttonText: 'Start',
+        buttonDisabled: false,
       });
     }
-
-    recordAudioRequest.then((hasPermission) => {
-      if (!hasPermission) {
-        console.error('Did not grant required microphone permission.');
-        return;
-      }
-
-      VoiceProcessor.getVoiceProcessor(512, 16000)
-        .start()
-        .then((didStart) => {
-          if (didStart) {
-            this.setState({
-              isListening: true,
-              buttonText: 'Stop',
-              buttonDisabled: false,
-            });
-          }
-        });
-    });
   }
 
-  _stopProcessing() {
-    VoiceProcessor.getVoiceProcessor(512, 16000)
-      .stop()
-      .then((didStop) => {
-        if (didStop) {
-          this.setState({
-            isListening: false,
-            buttonText: 'Start',
-            buttonDisabled: false,
-          });
-        }
-      });
-  }
-
-  _toggleProcessing() {
+  async _toggleProcessing() {
     this.setState({
       buttonDisabled: true,
     });
 
     if (this.state.isListening) {
-      this._stopProcessing();
+      await this._stopProcessing();
     } else {
-      this._startProcessing();
-    }
-  }
-
-  async _requestRecordAudioPermission() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO!,
-        {
-          title: 'Microphone Permission',
-          message:
-            'VoiceProcessorExample needs your permission to receive audio buffers.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        }
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    } catch (err) {
-      console.error(err);
-      return false;
+      await this._startProcessing();
     }
   }
 

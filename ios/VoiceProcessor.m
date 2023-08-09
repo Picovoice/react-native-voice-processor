@@ -14,11 +14,17 @@
 
 @interface RCT_EXTERN_MODULE(PvVoiceProcessor, RCTEventEmitter)
 
-RCT_EXTERN_METHOD(start:(int)frameSize
-                  sampleRate:(int)sampleRate
+RCT_EXTERN_METHOD(start: (UInt32)frameLength
+                  sampleRate: (UInt32)sampleRate
                   resolver: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(stop: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(isRecording: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(hasRecordAudioPermission: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
 @end
