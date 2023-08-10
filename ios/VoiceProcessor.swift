@@ -56,12 +56,12 @@ class PvVoiceProcessor: RCTEventEmitter {
 
     @objc(start:sampleRate:resolver:rejecter:)
     func start(
-            frameLength: UInt32,
-            sampleRate: UInt32,
+            frameLength: Int,
+            sampleRate: Int,
             resolver resolve: RCTPromiseResolveBlock,
             rejecter reject: RCTPromiseRejectBlock) -> Void {
         do {
-            try voiceProcessor.start(frameLength: frameLength, sampleRate: sampleRate)
+            try voiceProcessor.start(frameLength: UInt32(frameLength), sampleRate: UInt32(sampleRate))
         } catch {
             reject("PV_AUDIO_RECORDER_ERROR", "Unable to start audio recording", error)
             return

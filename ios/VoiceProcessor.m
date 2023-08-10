@@ -14,8 +14,8 @@
 
 @interface RCT_EXTERN_MODULE(PvVoiceProcessor, RCTEventEmitter)
 
-RCT_EXTERN_METHOD(start: (UInt32)frameLength
-                  sampleRate: (UInt32)sampleRate
+RCT_EXTERN_METHOD(start: (int)frameLength
+                  sampleRate: (int)sampleRate
                   resolver: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
 

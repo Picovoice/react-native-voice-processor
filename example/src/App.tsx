@@ -10,16 +10,16 @@
 //
 
 import React, { Component } from 'react';
-import { Button } from 'react-native';
-import { StyleSheet, View } from 'react-native';
-import { VoiceProcessor } from 'react-native-voice-processor';
-import type { VoiceProcessorError } from 'react-native-voice-processor';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import { VoiceProcessor } from '@picovoice/react-native-voice-processor';
+import type { VoiceProcessorError } from '@picovoice/react-native-voice-processor';
 
 type Props = {};
 type State = {
   isListening: boolean;
   buttonText: string;
   buttonDisabled: boolean;
+  errorMessage: string | null;
 };
 
 export default class App extends Component<Props, State> {
@@ -34,6 +34,7 @@ export default class App extends Component<Props, State> {
       buttonText: 'Start',
       isListening: false,
       buttonDisabled: false,
+      errorMessage: null,
     };
 
     this._voiceProcessor = VoiceProcessor.instance;
@@ -41,7 +42,9 @@ export default class App extends Component<Props, State> {
       console.log(`Received a frame with size ${frame.length}`);
     });
     this._voiceProcessor.addErrorListener((error: VoiceProcessorError) => {
-      console.error(`Error listener triggered: ${error}`);
+      this.setState({
+        errorMessage: `Error received from error listener: ${error}`,
+      });
     });
   }
 
@@ -57,21 +60,28 @@ export default class App extends Component<Props, State> {
           buttonDisabled: false,
         });
       } else {
-        console.error(Error('User did not grant permission to record audio.'));
+        this.setState({
+          errorMessage: 'User did not grant permission to record audio',
+        });
       }
     } catch (e) {
-      console.error(e);
+      this.setState({
+        errorMessage: `Unable to start recording: ${e}`,
+      });
     }
   }
 
   async _stopProcessing() {
     try {
       await this._voiceProcessor.stop();
-    } catch (e) {
       this.setState({
-        isListening: false,
+        isListening: await this._voiceProcessor.isRecording(),
         buttonText: 'Start',
         buttonDisabled: false,
+      });
+    } catch (e) {
+      this.setState({
+        errorMessage: `Unable to stop recording: ${e}`,
       });
     }
   }
@@ -97,6 +107,18 @@ export default class App extends Component<Props, State> {
             disabled={this.state.buttonDisabled}
             onPress={() => this._toggleProcessing()}
           />
+          {this.state.errorMessage && (
+            <View style={styles.errorBox}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 16,
+                }}
+              >
+                {this.state.errorMessage}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     );
@@ -112,5 +134,14 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     margin: 5,
+  },
+  errorBox: {
+    backgroundColor: 'red',
+    borderRadius: 5,
+    margin: 20,
+    marginTop: 5,
+    marginBottom: 5,
+    padding: 10,
+    textAlign: 'center',
   },
 });
