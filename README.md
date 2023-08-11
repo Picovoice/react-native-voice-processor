@@ -38,7 +38,7 @@ data to the user via listeners.
 
 ## Compatibility
 
-- React Native 0.62.2+
+- React Native 0.68.7+
 - Android 5.0+ (API 21+)
 - iOS 11.0+
 
