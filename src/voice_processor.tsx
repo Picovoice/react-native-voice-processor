@@ -39,8 +39,8 @@ class VoiceProcessor {
 
     this._eventEmitter.addListener(
       NativeModules.PvVoiceProcessor.ERROR_EMITTER_KEY,
-      async (error: Error) => {
-        let voiceProcessorError = new VoiceProcessorError(error.message);
+      async (error: string) => {
+        let voiceProcessorError = new VoiceProcessorError(error);
         this._errorListeners.forEach(
           (listener: VoiceProcessorErrorListener) => {
             listener(voiceProcessorError);

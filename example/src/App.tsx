@@ -11,6 +11,8 @@
 
 import React, { Component } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import Svg, { Rect } from 'react-native-svg';
+
 import { VoiceProcessor } from '@picovoice/react-native-voice-processor';
 import type { VoiceProcessorError } from '@picovoice/react-native-voice-processor';
 
@@ -20,11 +22,15 @@ type State = {
   buttonText: string;
   buttonDisabled: boolean;
   errorMessage: string | null;
+  vuMeterWidthPercent: number;
+  volumeHistory: number[];
 };
 
 export default class App extends Component<Props, State> {
   private readonly _frameLength: number = 512;
   private readonly _sampleRate: number = 16000;
+  private readonly _dbfsOffset: number = 60;
+  private readonly _volumeHistoryCapacity: number = 5;
 
   private _voiceProcessor: VoiceProcessor;
 
@@ -35,11 +41,18 @@ export default class App extends Component<Props, State> {
       isListening: false,
       buttonDisabled: false,
       errorMessage: null,
+      vuMeterWidthPercent: 0,
+      volumeHistory: new Array(this._volumeHistoryCapacity).fill(0),
     };
 
     this._voiceProcessor = VoiceProcessor.instance;
     this._voiceProcessor.addFrameListener((frame: number[]) => {
-      console.log(`Received a frame with size ${frame.length}`);
+      this.setState((prevState) => ({
+        volumeHistory: [
+          ...prevState.volumeHistory.splice(1),
+          this.calculateVolume(frame),
+        ],
+      }));
     });
     this._voiceProcessor.addErrorListener((error: VoiceProcessorError) => {
       this.setState({
@@ -48,7 +61,18 @@ export default class App extends Component<Props, State> {
     });
   }
 
-  componentDidMount() {}
+  componentDidUpdate(_prevProps: Props, prevState: State) {
+    if (prevState.volumeHistory !== this.state.volumeHistory) {
+      const volumeAvg =
+        [...this.state.volumeHistory].reduce(
+          (accumulator, value) => accumulator + value,
+          0
+        ) / this._volumeHistoryCapacity;
+      this.setState({
+        vuMeterWidthPercent: volumeAvg * 100,
+      });
+    }
+  }
 
   async _startProcessing() {
     try {
@@ -98,17 +122,41 @@ export default class App extends Component<Props, State> {
     }
   }
 
+  calculateVolume(frame: number[]): number {
+    const sum = [...frame].reduce(
+      (accumulator, sample) => accumulator + sample ** 2,
+      0
+    );
+    const rms = Math.sqrt(sum / frame.length) / 32767.0;
+    const dbfs = 20 * Math.log10(Math.max(rms, 1e-9));
+    return Math.min(1, Math.max(0, dbfs + this._dbfsOffset) / this._dbfsOffset);
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.subContainer}>
-          <Button
-            title={this.state.buttonText}
-            disabled={this.state.buttonDisabled}
-            onPress={() => this._toggleProcessing()}
+        <Svg height="50%" width="90%">
+          <Rect x="0" y="90%" width="100%" height="100" fill="gray" />
+          <Rect
+            x="0"
+            y="90%"
+            width={`${this.state.vuMeterWidthPercent}%`}
+            height="100"
+            fill="#377dff"
           />
+        </Svg>
+
+        <View style={styles.subContainer}>
+          <View style={styles.buttonContainer}>
+            <Button
+              title={this.state.buttonText}
+              disabled={this.state.buttonDisabled}
+              onPress={() => this._toggleProcessing()}
+              color="#377dff"
+            />
+          </View>
           {this.state.errorMessage && (
-            <View style={styles.errorBox}>
+            <View style={styles.errorContainer}>
               <Text
                 style={{
                   color: 'white',
@@ -127,20 +175,28 @@ export default class App extends Component<Props, State> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'row',
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   subContainer: {
     margin: 5,
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  errorBox: {
+  buttonContainer: {
+    flex: 1,
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  errorContainer: {
     backgroundColor: 'red',
     borderRadius: 5,
-    margin: 20,
-    marginTop: 5,
-    marginBottom: 5,
+    margin: 10,
     padding: 10,
     textAlign: 'center',
   },
