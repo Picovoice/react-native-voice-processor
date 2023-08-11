@@ -1,7 +1,7 @@
 # React Native Voice Processor
 
 [![GitHub release](https://img.shields.io/github/release/Picovoice/react-native-voice-processor.svg)](https://github.com/Picovoice/react-native-voice-processor/releases)
-[![GitHub](https://img.shields.io/github/license/Picovoice/react-native-voice-processor)](https://github.com/Picovoice/react-native-voice-processor)
+[![GitHub](https://img.shields.io/github/license/Picovoice/react-native-voice-processor.svg)](https://github.com/Picovoice/react-native-voice-processor)
 
 [![npm](https://img.shields.io/npm/v/@picovoice/react-native-voice-processor)](https://www.npmjs.com/package/@picovoice/react-native-voice-processor)
 
