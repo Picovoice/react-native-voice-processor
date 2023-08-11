@@ -9,6 +9,9 @@
 // specific language governing permissions and limitations under the License.
 //
 
+/**
+ * Error class for errors related to the VoiceProcessor.
+ */
 class VoiceProcessorError extends Error {
   constructor(message: string) {
     super(message);
