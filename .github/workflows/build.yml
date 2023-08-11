@@ -7,11 +7,13 @@ on:
     paths:
       - '**'
       - '!README.md'
+      - '!example/README.md'
   pull_request:
     branches: [ main, 'v[0-9]+.[0-9]+' ]
     paths:
       - '**'
       - '!README.md'
+      - '!example/README.md'
 
 jobs:
   build:
@@ -19,15 +21,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [lts/*]
+        node-version: [16.x, 18.x, 20.x]
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 

@@ -1,5 +1,5 @@
 //
-// Copyright 2020-2023 Picovoice Inc.
+// Copyright 2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -9,17 +9,14 @@
 // specific language governing permissions and limitations under the License.
 //
 
-import {
-  VoiceProcessor,
-  VoiceProcessorFrameListener,
-  VoiceProcessorErrorListener,
-} from './voice_processor';
+/**
+ * Error class for errors related to the VoiceProcessor.
+ */
+class VoiceProcessorError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'VoiceProcessorError';
+  }
+}
 
-import { VoiceProcessorError } from './voice_processor_errors';
-
-export {
-  VoiceProcessor,
-  VoiceProcessorError,
-  VoiceProcessorErrorListener,
-  VoiceProcessorFrameListener,
-};
+export { VoiceProcessorError };

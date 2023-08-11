@@ -11,44 +11,73 @@
 
 package ai.picovoice.reactnative.voiceprocessor;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+
 import androidx.annotation.NonNull;
 
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
-import android.os.Process;
-import android.util.Log;
-
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.core.PermissionAwareActivity;
+import com.facebook.react.modules.core.PermissionListener;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
+
+import ai.picovoice.android.voiceprocessor.VoiceProcessor;
+import ai.picovoice.android.voiceprocessor.VoiceProcessorErrorListener;
+import ai.picovoice.android.voiceprocessor.VoiceProcessorException;
+import ai.picovoice.android.voiceprocessor.VoiceProcessorFrameListener;
 
 @ReactModule(name = VoiceProcessorModule.NAME)
 public class VoiceProcessorModule extends ReactContextBaseJavaModule {
   public static final String NAME = "PvVoiceProcessor";
 
+  private static final int RECORD_AUDIO_REQUEST_CODE =
+    VoiceProcessorModule.class.hashCode();
   private static final String LOG_TAG = "PicovoiceVoiceProcessorModule";
-  private static final String BUFFER_EMITTER_KEY = "buffer_sent";
+  private static final String FRAME_EMITTER_KEY = "frame_sent";
+  private static final String ERROR_EMITTER_KEY = "error_sent";
+
   private final ReactApplicationContext context;
+  private final VoiceProcessor voiceProcessor;
 
-  private final AtomicBoolean started = new AtomicBoolean(false);
-  private final AtomicBoolean stop = new AtomicBoolean(false);
-  private final AtomicBoolean stopped = new AtomicBoolean(false);
-
-  public VoiceProcessorModule(ReactApplicationContext reactContext) {
+  public VoiceProcessorModule(final ReactApplicationContext reactContext) {
     super(reactContext);
     this.context = reactContext;
+    this.voiceProcessor = VoiceProcessor.getInstance();
+    this.voiceProcessor.addErrorListener(new VoiceProcessorErrorListener() {
+      @Override
+      public void onError(VoiceProcessorException error) {
+        reactContext.getJSModule(
+            DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+          .emit(
+            ERROR_EMITTER_KEY,
+            error.getMessage());
+      }
+    });
+
+    this.voiceProcessor.addFrameListener(new VoiceProcessorFrameListener() {
+      @Override
+      public void onFrame(final short[] frame) {
+        WritableArray wArray = Arguments.createArray();
+        for (short value : frame) {
+          wArray.pushInt(value);
+        }
+        reactContext.getJSModule(
+            DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+          .emit(
+            FRAME_EMITTER_KEY,
+            wArray);
+      }
+    });
   }
 
   @Override
@@ -58,110 +87,79 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void addListener(String eventName) { }
+  public void addListener(String eventName) {
+  }
 
   @ReactMethod
-  public void removeListeners(Integer count) { }
+  public void removeListeners(Integer count) {
+  }
 
   @Override
   public Map<String, Object> getConstants() {
     final Map<String, Object> constants = new HashMap<>();
-    constants.put("BUFFER_EMITTER_KEY", BUFFER_EMITTER_KEY);
+    constants.put("FRAME_EMITTER_KEY", FRAME_EMITTER_KEY);
+    constants.put("ERROR_EMITTER_KEY", ERROR_EMITTER_KEY);
     return constants;
   }
 
   @ReactMethod
-  public void start(Integer frameSize, Integer sampleRate, Promise promise) {
-
-    if (started.get()) {
-      return;
-    }
-
-    Executors.newSingleThreadExecutor().submit(new Callable<Void>() {
-      @Override
-      public Void call() {
-        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
-        read(frameSize, sampleRate);
-        return null;
-      }
-    });
-
-    while(!started.get()){
-      try {
-        Thread.sleep(10);
-      } catch (InterruptedException e) {
-        Log.e(LOG_TAG, e.toString());
-      }
-    }
-
-    promise.resolve(true);
+  public void start(Integer frameLength, Integer sampleRate, Promise promise) {
+   try {
+      voiceProcessor.start(frameLength, sampleRate);
+      promise.resolve(true);
+   } catch (VoiceProcessorException e) {
+     promise.reject(
+       "PV_AUDIO_RECORDER_ERROR",
+       "Unable to start audio recording: " + e);
+   }
   }
 
   @ReactMethod
   public void stop(Promise promise) {
-    if (!started.get()) {
-      return;
+    try {
+      voiceProcessor.stop();
+      promise.resolve(true);
+    } catch (VoiceProcessorException e) {
+      promise.reject(
+        "PV_AUDIO_RECORDER_ERROR",
+        "Unable to stop audio recording: " + e);
     }
-
-    stop.set(true);
-
-    while (!stopped.get()) {
-      try {
-        Thread.sleep(10);
-      } catch (InterruptedException e) {
-        Log.e(LOG_TAG, e.toString());
-      }
-    }
-
-    started.set(false);
-    stop.set(false);
-    stopped.set(false);
-    promise.resolve(true);
   }
 
+  @ReactMethod
+  public void isRecording(Promise promise) {
+    promise.resolve(voiceProcessor.getIsRecording());
+  }
 
-  private void read(Integer frameSize, Integer sampleRate) {
-    final int minBufferSize = AudioRecord.getMinBufferSize(
-      sampleRate,
-      AudioFormat.CHANNEL_IN_MONO,
-      AudioFormat.ENCODING_PCM_16BIT);
-    final int bufferSize = Math.max(sampleRate / 2, minBufferSize);
-    short[] buffer = new short[frameSize];
-
-    AudioRecord audioRecord = null;
-    try {
-      audioRecord = new AudioRecord(
-        MediaRecorder.AudioSource.MIC,
-        sampleRate,
-        AudioFormat.CHANNEL_IN_MONO,
-        AudioFormat.ENCODING_PCM_16BIT,
-        bufferSize);
-
-      audioRecord.startRecording();
-      boolean firstBuffer = true;
-      while (!stop.get()) {
-        if (audioRecord.read(buffer, 0, buffer.length) == buffer.length) {
-          if(firstBuffer){
-            started.set(true);
-            firstBuffer = false;
+  @ReactMethod
+  public void hasRecordAudioPermission(final Promise promise) {
+    if (voiceProcessor.hasRecordAudioPermission(this.context.getApplicationContext())) {
+      promise.resolve(true);
+    } else {
+      if (this.getCurrentActivity() != null) {
+        ((PermissionAwareActivity) this.getCurrentActivity()).requestPermissions(
+        new String[]{Manifest.permission.RECORD_AUDIO},
+        RECORD_AUDIO_REQUEST_CODE,
+        new PermissionListener() {
+          public boolean onRequestPermissionsResult(final int requestCode,
+                                                    @NonNull final String[] permissions,
+                                                    @NonNull final int[] grantResults) {
+            if (requestCode == RECORD_AUDIO_REQUEST_CODE &&
+              grantResults.length > 0 &&
+              grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+              promise.resolve(true);
+              return true;
+            } else {
+              promise.resolve(false);
+              return false;
+            }
           }
-          WritableArray wArray = Arguments.createArray();
-          for (int i = 0; i < buffer.length; i++)
-            wArray.pushInt(buffer[i]);
-          this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-            .emit(BUFFER_EMITTER_KEY, wArray);
-        }
+        });
+      } else {
+        promise.reject(
+          "PV_AUDIO_RECORDER_ERROR",
+          "Unable to access current activity to request permissions");
       }
-
-      audioRecord.stop();
-    } catch (IllegalArgumentException | IllegalStateException e) {
-      throw e;
-    } finally {
-      if (audioRecord != null) {
-        audioRecord.release();
-      }
-
-      stopped.set(true);
     }
   }
 }
