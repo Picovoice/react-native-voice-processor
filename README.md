@@ -147,7 +147,7 @@ To launch the demo, run:
 ```console
 yarn bootstrap
 yarn example ios
-// or
+# or
 yarn example android
 ```
 

@@ -27,7 +27,7 @@ yarn bootstrap
 Connect a mobile device or launch a simulator. Then build and run the app:
 ```console
 yarn example ios
-// or
+# or
 yarn example android
 ```
 
