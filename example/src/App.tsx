@@ -13,8 +13,10 @@ import React, { Component } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 
-import { VoiceProcessor } from '@picovoice/react-native-voice-processor';
-import type { VoiceProcessorError } from '@picovoice/react-native-voice-processor';
+import {
+  VoiceProcessor,
+  VoiceProcessorError,
+} from '@picovoice/react-native-voice-processor';
 
 type Props = {};
 type State = {
