@@ -16,6 +16,7 @@ import Svg, { Rect } from 'react-native-svg';
 import {
   VoiceProcessor,
   VoiceProcessorError,
+  // @ts-ignore
 } from '@picovoice/react-native-voice-processor';
 
 type Props = {};

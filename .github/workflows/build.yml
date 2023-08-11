@@ -38,7 +38,7 @@ jobs:
         run: yarn install
 
       - name: build
-        run: yarn prepack
+        run: yarn build
 
       - name: bootstrap examples
         run: yarn bootstrap
