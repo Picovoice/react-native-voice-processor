@@ -16,7 +16,7 @@ import ios_voice_processor
 @objc(PvVoiceProcessor)
 class PvVoiceProcessor: RCTEventEmitter {
 
-    private let voiceProcessor = VoiceProcessor.instance;
+    private let voiceProcessor = VoiceProcessor.instance
 
     private var settingsTimer: Timer?
     private var settingsLock = NSLock()
@@ -59,7 +59,7 @@ class PvVoiceProcessor: RCTEventEmitter {
             frameLength: Int,
             sampleRate: Int,
             resolver resolve: RCTPromiseResolveBlock,
-            rejecter reject: RCTPromiseRejectBlock) -> Void {
+            rejecter reject: RCTPromiseRejectBlock) {
         do {
             try voiceProcessor.start(frameLength: UInt32(frameLength), sampleRate: UInt32(sampleRate))
         } catch {
@@ -79,7 +79,7 @@ class PvVoiceProcessor: RCTEventEmitter {
     }
 
     @objc(stop:rejecter:)
-    func stop(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+    func stop(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         do {
             try voiceProcessor.stop()
         } catch {
@@ -93,12 +93,14 @@ class PvVoiceProcessor: RCTEventEmitter {
     }
 
     @objc(isRecording:rejecter:)
-    func isRecording(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+    func isRecording(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         resolve(voiceProcessor.isRecording)
     }
 
     @objc(hasRecordAudioPermission:rejecter:)
-    func hasRecordAudioPermission(resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+    func hasRecordAudioPermission(
+            resolver resolve: @escaping RCTPromiseResolveBlock,
+            rejecter reject: RCTPromiseRejectBlock) {
         if VoiceProcessor.hasRecordAudioPermission {
             resolve(true)
         } else {
@@ -111,7 +113,8 @@ class PvVoiceProcessor: RCTEventEmitter {
     @objc func monitorSettings() {
         settingsLock.lock()
 
-        if voiceProcessor.isRecording && AVAudioSession.sharedInstance().category != AVAudioSession.Category.playAndRecord {
+        if voiceProcessor.isRecording &&
+                AVAudioSession.sharedInstance().category != AVAudioSession.Category.playAndRecord {
             if !isSettingsErrorReported {
                 self.sendEvent(
                         withName: ERROR_EMITTER_KEY,
