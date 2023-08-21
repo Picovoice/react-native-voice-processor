@@ -5,6 +5,7 @@ alexa
 alsa
 americano
 ananas
+androiddebugkey
 annyeong
 Appcenter
 armeabi
@@ -84,6 +85,7 @@ jarvis
 javadoc
 javax
 jetson
+jsbundle
 keompyuteo
 konnichiwa
 konpyūtā
@@ -115,6 +117,7 @@ netcoreapp
 newtonsoft
 noncacheable
 notest
+NSURL
 nunit
 objblock
 ocotp
@@ -129,6 +132,7 @@ pico
 picovoice
 plughw
 podfile
+podspec
 porco
 porcospino
 porcupinedemo
@@ -185,6 +189,7 @@ testcase
 testcases
 timecode
 tmpdir
+typecheck
 unitypackage
 uppercased
 voiceprocessor

@@ -36,8 +36,4 @@ jobs:
       run: npm install yarn
 
     - name: Run Binding Linter
-      run: yarn && yarn lint
-
-    - name: Run Demo Linter
-      run: yarn && yarn lint
-      working-directory: example
+      run: yarn bootstrap && yarn lint

@@ -160,14 +160,7 @@ export default class App extends Component<Props, State> {
           </View>
           {this.state.errorMessage && (
             <View style={styles.errorContainer}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 16,
-                }}
-              >
-                {this.state.errorMessage}
-              </Text>
+              <Text style={styles.errorText}>{this.state.errorMessage}</Text>
             </View>
           )}
         </View>
@@ -202,5 +195,9 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     textAlign: 'center',
+  },
+  errorText: {
+    color: 'white',
+    fontSize: 16,
   },
 });

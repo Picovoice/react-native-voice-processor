@@ -15,10 +15,6 @@ on:
       - 'example/**'
       - '!example/README.md'
 
-defaults:
-  run:
-    working-directory: example
-
 jobs:
   build-android:
     runs-on: ubuntu-latest
@@ -39,10 +35,10 @@ jobs:
       run: npm install yarn
 
     - name: Install dependencies
-      run: yarn android-install
+      run: yarn bootstrap
 
     - name: Build bundle
-      run: yarn android-bundle
+      run: yarn example android-bundle
 
     - name: Build
       run: ./gradlew assembleDebug
@@ -67,10 +63,10 @@ jobs:
       run: npm install yarn
 
     - name: Install dependencies
-      run: yarn ios-install
+      run: yarn bootstrap
 
     - name: Build bundle
-      run: yarn ios-bundle
+      run: yarn example ios-bundle
 
     - name: Build
       run: xcrun xcodebuild build

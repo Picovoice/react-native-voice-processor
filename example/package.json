@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android-bundle": "react-native bundle --dev false --platform android --entry-file index.js --bundle-output ./android/app/src/main/assets/app.jsbundle --assets-dest ./android/app/src/main/res/",
     "ios": "react-native run-ios",
+    "ios-bundle": "react-native bundle --dev false --platform ios --entry-file index.js --bundle-output ios/app.jsbundle",
     "start": "react-native start",
     "pods": "pod-install --quiet"
   },
