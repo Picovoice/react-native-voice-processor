@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.porcupinetestapp"
+    namespace "com.voiceprocessortestapp"
     defaultConfig {
-        applicationId "com.porcupinetestapp"
+        applicationId "com.voiceprocessortestapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

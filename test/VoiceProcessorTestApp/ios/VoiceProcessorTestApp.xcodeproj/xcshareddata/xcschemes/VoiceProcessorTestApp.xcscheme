@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "PorcupineTestApp.app"
-               BlueprintName = "PorcupineTestApp"
-               ReferencedContainer = "container:PorcupineTestApp.xcodeproj">
+               BuildableName = "VoiceProcessorTestApp.app"
+               BlueprintName = "VoiceProcessorTestApp"
+               ReferencedContainer = "container:VoiceProcessorTestApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "PorcupineTestAppTests.xctest"
-               BlueprintName = "PorcupineTestAppTests"
-               ReferencedContainer = "container:PorcupineTestApp.xcodeproj">
+               BuildableName = "VoiceProcessorTestAppTests.xctest"
+               BlueprintName = "VoiceProcessorTestAppTests"
+               ReferencedContainer = "container:VoiceProcessorTestApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "PorcupineTestApp.app"
-            BlueprintName = "PorcupineTestApp"
-            ReferencedContainer = "container:PorcupineTestApp.xcodeproj">
+            BuildableName = "VoiceProcessorTestApp.app"
+            BlueprintName = "VoiceProcessorTestApp"
+            ReferencedContainer = "container:VoiceProcessorTestApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "PorcupineTestApp.app"
-            BlueprintName = "PorcupineTestApp"
-            ReferencedContainer = "container:PorcupineTestApp.xcodeproj">
+            BuildableName = "VoiceProcessorTestApp.app"
+            BlueprintName = "VoiceProcessorTestApp"
+            ReferencedContainer = "container:VoiceProcessorTestApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

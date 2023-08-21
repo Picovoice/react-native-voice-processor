@@ -6,7 +6,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  self.moduleName = @"PorcupineTestApp";
+  self.moduleName = @"VoiceProcessorTestApp";
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 

@@ -15,6 +15,10 @@ on:
       - '!README.md'
       - '!example/README.md'
 
+defaults:
+  run:
+    working-directory: test/VoiceProcessorTestApp
+
 jobs:
   test-android:
     name: Run tests on Android
@@ -23,11 +27,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # - name: Build tests
-    #   run: detox build --configuration android.emu.release
+    - name: Pre-build dependencies
+      run: yarn install
 
-    # - name: Run tests
-    #   run: detox test --configuration android.emu.release
+    - name: Build tests
+      run: detox build --configuration android.emu.release
+
+    - name: Run tests
+      run: detox test --configuration android.emu.release
 
   test-ios:
     name: Run tests on iOS

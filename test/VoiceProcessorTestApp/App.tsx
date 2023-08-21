@@ -21,7 +21,7 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import {runPorcupineTests, Result} from './Tests';
+import {runVoiceProcessorTests, Result} from './Tests';
 
 function printResults(results: Result[]) {
     return results.map(result => {
@@ -52,11 +52,11 @@ function App(): JSX.Element {
     };
 
     const [running, setRunning] = useState(false);
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState<Result[]>([]);
 
     const runTests = async () => {
         setRunning(true);
-        const newResults = await runPorcupineTests();
+        const newResults = await runVoiceProcessorTests();
         setResults(newResults);
         setRunning(false);
     };

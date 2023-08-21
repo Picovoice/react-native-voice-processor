@@ -1,4 +1,4 @@
-package com.porcupinetestapp;
+package com.voiceprocessortestapp;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

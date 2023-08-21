@@ -1,5 +1,5 @@
 {
-  "name": "porcupinetestapp",
+  "name": "react-native-voice-processor-testapp",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,8 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@picovoice/porcupine-react-native": "file:../../",
-    "@picovoice/react-native-voice-processor": "^1.1.0",
+    "@picovoice/react-native-voice-processor": "file:../../",
     "base-64": "^1.0.0",
     "react": "18.2.0",
     "react-native": "0.71.0",

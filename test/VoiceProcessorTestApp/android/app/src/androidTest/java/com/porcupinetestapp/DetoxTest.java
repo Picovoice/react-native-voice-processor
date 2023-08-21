@@ -1,4 +1,4 @@
-package com.porcupinetestapp;
+package com.voiceprocessortestapp;
 
 import com.wix.detox.Detox;
 import com.wix.detox.config.DetoxConfig;
