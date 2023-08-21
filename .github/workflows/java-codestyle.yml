@@ -5,10 +5,12 @@ on:
   push:
     branches: [ main ]
     paths:
+      - '.github/workflows/java-codestyle.yml'
       - '**/*.java'
   pull_request:
     branches: [ main, 'v[0-9]+.[0-9]+' ]
     paths:
+      - '.github/workflows/java-codestyle.yml'
       - '**/*.java'
 
 jobs:
