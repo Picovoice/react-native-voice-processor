@@ -1,0 +1,83 @@
+name: React Native Voice Processor Example
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/example.yml'
+      - 'example/**'
+      - '!example/README.md'
+  pull_request:
+    branches: [ main, 'v[0-9]+.[0-9]+' ]
+    paths:
+      - '.github/workflows/example.yml'
+      - 'example/**'
+      - '!example/README.md'
+
+defaults:
+  run:
+    working-directory: example
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Pre-build dependencies
+      run: npm install yarn
+
+    - name: Install dependencies
+      run: yarn android-install
+
+    - name: Build bundle
+      run: yarn android-bundle
+
+    - name: Build
+      run: ./gradlew assembleDebug
+      working-directory: example/android
+
+  build-ios:
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Pre-build dependencies
+      run: npm install yarn
+
+    - name: Install dependencies
+      run: yarn ios-install
+
+    - name: Build bundle
+      run: yarn ios-bundle
+
+    - name: Build
+      run: xcrun xcodebuild build
+        -configuration Debug
+        -workspace VoiceProcessorExample.xcworkspace
+        -sdk iphoneos
+        -scheme VoiceProcessorExample
+        -derivedDataPath ddp
+        CODE_SIGNING_ALLOWED=NO
+      working-directory: example/ios

@@ -1,0 +1,43 @@
+name: TypeScript Codestyle
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/typescript-codestyle.yml'
+      - '**/*.js'
+      - '**/*.jsx'
+      - '**/*.ts'
+      - '**/*.tsx'
+
+  pull_request:
+    branches: [ main, 'v[0-9]+.[0-9]+' ]
+    paths:
+      - '.github/workflows/typescript-codestyle.yml'
+      - '**/*.js'
+      - '**/*.jsx'
+      - '**/*.ts'
+      - '**/*.tsx'
+
+jobs:
+  check-typescript-codestyle:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js LTS
+      uses: actions/setup-node@v3
+      with:
+        node-version: lts/*
+
+    - name: Pre-build dependencies
+      run: npm install yarn
+
+    - name: Run Binding Linter
+      run: yarn && yarn lint
+
+    - name: Run Demo Linter
+      run: yarn && yarn lint
+      working-directory: example
