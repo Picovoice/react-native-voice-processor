@@ -27,6 +27,7 @@ chipset
 chouchou
 chrono
 ckit
+cleartext
 cmake
 cmsis
 cocoapods
@@ -42,6 +43,7 @@ cortexm
 cporcupine
 cstring
 dbfs
+dimen
 dkgray
 dlfcn
 dlopen
@@ -112,6 +114,7 @@ microcontrollers
 micvoicec
 middlewares
 miniaudio
+mtrl
 murciélago
 netcoreapp
 newtonsoft
