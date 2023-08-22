@@ -43,8 +43,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # - name: Build tests
-    #   run: detox build --configuration ios.sim.release
+    - name: Pre-build dependencies
+      run: yarn install
 
-    # - name: Run tests
-    #   run: detox test --configuration ios.sim.release
+    - name: Build tests
+      run: detox build --configuration ios.sim.release
+
+    - name: Run tests
+      run: detox test --configuration ios.sim.release
