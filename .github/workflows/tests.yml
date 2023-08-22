@@ -46,6 +46,10 @@ jobs:
     - name: Pre-build dependencies
       run: yarn install
 
+    - name: Cocoapods install
+      working-directory: /test/VoiceProcessorTestApp/ios
+      run: pod install
+
     - name: Build tests
       run: detox build --configuration ios.sim.release
 
