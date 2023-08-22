@@ -50,9 +50,6 @@ jobs:
       working-directory: test/VoiceProcessorTestApp/ios
       run: pod install
 
-    - name: Grant permissions
-      run: xcrun simctl privacy booted grant microphone ai.picovoice.VoiceProcessorTestApp
-
     - name: Build tests
       run: detox build --configuration ios.sim.release
 

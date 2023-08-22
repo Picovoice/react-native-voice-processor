@@ -1,8 +1,14 @@
 const NUM_TESTS = 3;
 
 describe('VoiceProcessor', () => {
+
     beforeEach(async () => {
-        await device.launchApp({newInstance: true});
+        await device.launchApp({
+            newInstance: true,
+            permissions: {
+                microphone: 'YES',
+            },
+        });
     });
 
     it('should pass all tests', async () => {
