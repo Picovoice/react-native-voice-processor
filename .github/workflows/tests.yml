@@ -47,7 +47,7 @@ jobs:
       run: yarn install
 
     - name: Cocoapods install
-      working-directory: /test/VoiceProcessorTestApp/ios
+      working-directory: test/VoiceProcessorTestApp/ios
       run: pod install
 
     - name: Build tests
