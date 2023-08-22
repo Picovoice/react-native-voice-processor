@@ -1,4 +1,4 @@
-package com.voiceprocessortestapp;
+package ai.picovoice.voiceprocessortestapp;
 
 import com.wix.detox.Detox;
 import com.wix.detox.config.DetoxConfig;

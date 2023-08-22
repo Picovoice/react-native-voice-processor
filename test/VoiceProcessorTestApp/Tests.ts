@@ -9,56 +9,214 @@
 // specific language governing permissions and limitations under the License.
 //
 
-// import {Platform} from 'react-native';
-// import fs from 'react-native-fs';
-//
-// import {VoiceProcessor} from '@picovoice/react-native-voice-processor';
+import {
+    VoiceProcessor,
+    VoiceProcessorError,
+    VoiceProcessorErrorListener,
+    VoiceProcessorFrameListener,
+} from '@picovoice/react-native-voice-processor';
 
 export type Result = {
     testName: string;
     success: boolean;
     errorString?: string;
 };
-//
-// function arraysEqual(a, b) {
-//     if (a === b) {
-//         return true;
-//     }
-//     if (a == null || b == null) {
-//         return false;
-//     }
-//     if (a.length !== b.length) {
-//         return false;
-//     }
-//
-//     for (let i = 0; i < a.length; ++i) {
-//         if (a[i] !== b[i]) {
-//             return false;
-//         }
-//     }
-//
-//     return true;
-// }
+
+const _frameLength = 512;
+const _sampleRate = 16000;
+const _vp = VoiceProcessor.instance;
 
 async function basicTest(): Promise<Result> {
-    return {
+    let result: Result = {
         testName: 'Basic test',
-        success: true,
+        success: false,
     };
+    console.log("ho");
+    let frameCount = 0;
+    let errorCount = 0;
+
+    const frameListener: VoiceProcessorFrameListener = (frame: number[]) => {
+        if (frame.length !== _frameLength) {
+            result.success = false;
+            result.errorString = `Received frame of size ${frame.length}, expected ${_frameLength}`;
+        } else {
+            frameCount++;
+        }
+    };
+    const errorListener: VoiceProcessorErrorListener = (
+        error: VoiceProcessorError,
+    ) => {
+        result.success = false;
+        result.errorString = error.message;
+        errorCount++;
+    };
+    _vp?.addFrameListener(frameListener);
+    _vp?.addErrorListener(errorListener);
+
+    try {
+        if (await _vp?.isRecording()) {
+            return {
+                ...result,
+                errorString: 'Voice Processor should not be recording',
+            };
+        }
+        if (!(await _vp?.hasRecordAudioPermission())) {
+            return {
+                ...result,
+                errorString: 'Does not have record audio permission',
+            };
+        }
+        await _vp?.start(_frameLength, _sampleRate);
+        if (!(await _vp?.isRecording())) {
+            return {
+                ...result,
+                errorString: 'Voice Processor should be recording',
+            };
+        }
+
+        await new Promise(r => setTimeout(r, 3000));
+
+        await _vp?.stop();
+        if (!result.success && result.errorString) {
+            return result;
+        }
+
+        if (frameCount === 0 || errorCount > 0) {
+            return {
+                ...result,
+                errorString: `Received ${frameCount} frames and ${errorCount} errors`,
+            };
+        }
+        if (await _vp?.isRecording()) {
+            return {
+                ...result,
+                errorString: 'Voice Processor should not be recording',
+            };
+        }
+
+        return {
+            ...result,
+            success: true,
+        };
+    } catch (e: any) {
+        return {
+            ...result,
+            errorString: e.message,
+        };
+    } finally {
+        _vp.clearErrorListeners();
+        _vp.clearFrameListeners();
+    }
 }
 
 async function invalidSetupTest(): Promise<Result> {
-    return {
+    let result: Result = {
         testName: 'Invalid setup test',
         success: true,
     };
+
+    try {
+        if (!(await _vp?.hasRecordAudioPermission())) {
+            return {
+                ...result,
+                errorString: 'Does not have record audio permission',
+            };
+        }
+        await _vp?.start(_frameLength, _sampleRate);
+        try {
+            await _vp?.start(1024, 44100);
+            return {
+                ...result,
+                errorString:
+                    'Second call to start() should have thrown an error',
+            };
+        } catch (e: any) {
+            result.success = true;
+        }
+        await _vp?.stop();
+    } catch (e: any) {
+        return {
+            ...result,
+            errorString: e.message,
+        };
+    }
+
+    return result;
 }
 
 async function addRemoveListenerTest(): Promise<Result> {
-    return {
+    let result: Result = {
         testName: 'Add and remove listeners test',
-        success: true,
+        success: false,
     };
+
+    const checkNumListenerResult = (num: number, expectedNum: number) => {
+        if (num !== expectedNum) {
+            throw Error(
+                `Expected listener count to be ${num}, got ${expectedNum}`,
+            );
+        }
+    };
+
+    try {
+        checkNumListenerResult(_vp?.numFrameListeners, 0);
+
+        let frameListener1: VoiceProcessorFrameListener = _ => {};
+        let frameListener2: VoiceProcessorFrameListener = _ => {};
+        _vp?.addFrameListener(frameListener1);
+        checkNumListenerResult(_vp?.numFrameListeners, 1);
+        _vp?.addFrameListener(frameListener2);
+        checkNumListenerResult(_vp?.numFrameListeners, 2);
+        _vp?.removeFrameListener(frameListener1);
+        checkNumListenerResult(_vp?.numFrameListeners, 1);
+        _vp?.removeFrameListener(frameListener1);
+        checkNumListenerResult(_vp?.numFrameListeners, 1);
+        _vp?.removeFrameListener(frameListener2);
+        checkNumListenerResult(_vp?.numFrameListeners, 0);
+
+        let frameListeners: VoiceProcessorFrameListener[] = [
+            frameListener1,
+            frameListener2,
+        ];
+        _vp?.addFrameListeners(frameListeners);
+        checkNumListenerResult(_vp?.numFrameListeners, 2);
+        _vp?.removeFrameListeners(frameListeners);
+        checkNumListenerResult(_vp?.numFrameListeners, 0);
+        _vp?.addFrameListeners(frameListeners);
+        checkNumListenerResult(_vp?.numFrameListeners, 2);
+        _vp?.clearFrameListeners();
+        checkNumListenerResult(_vp?.numFrameListeners, 0);
+
+        let errorListener1: VoiceProcessorErrorListener = _ => {};
+        let errorListener2: VoiceProcessorErrorListener = _ => {};
+        checkNumListenerResult(_vp?.numErrorListeners, 0);
+        _vp?.addErrorListener(errorListener1);
+        checkNumListenerResult(_vp?.numErrorListeners, 1);
+        _vp?.addErrorListener(errorListener2);
+        checkNumListenerResult(_vp?.numErrorListeners, 2);
+        _vp?.removeErrorListener(errorListener1);
+        checkNumListenerResult(_vp?.numErrorListeners, 1);
+        _vp?.removeErrorListener(errorListener1);
+        checkNumListenerResult(_vp?.numErrorListeners, 1);
+        _vp?.removeErrorListener(errorListener2);
+        checkNumListenerResult(_vp?.numErrorListeners, 0);
+        _vp?.addErrorListener(errorListener1);
+        checkNumListenerResult(_vp?.numErrorListeners, 1);
+        _vp?.clearErrorListeners();
+        checkNumListenerResult(_vp?.numErrorListeners, 0);
+        return {
+            ...result,
+            success: true,
+        };
+    } catch (e: any) {
+        return {
+            ...result,
+            errorString: e.message,
+        };
+    } finally {
+        _vp.clearErrorListeners();
+        _vp.clearFrameListeners();
+    }
 }
 
 export async function runVoiceProcessorTests(): Promise<Result[]> {
@@ -68,3 +226,5 @@ export async function runVoiceProcessorTests(): Promise<Result[]> {
         await addRemoveListenerTest(),
     ];
 }
+
+export const numTests = 3;
