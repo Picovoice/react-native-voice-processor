@@ -1,0 +1,57 @@
+name: React Native Voice Processor Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '**'
+      - '!README.md'
+      - '!example/README.md'
+  pull_request:
+    branches: [ main, 'v[0-9]+.[0-9]+' ]
+    paths:
+      - '**'
+      - '!README.md'
+      - '!example/README.md'
+
+defaults:
+  run:
+    working-directory: test/VoiceProcessorTestApp
+
+jobs:
+  test-android:
+    name: Run tests on Android
+    runs-on: pv-android
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Pre-build dependencies
+      run: yarn install
+
+    - name: Build tests
+      run: detox build --configuration android.emu.release
+
+    - name: Run tests
+      run: detox test --configuration android.emu.release
+
+  test-ios:
+    name: Run tests on iOS
+    runs-on: pv-ios
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Pre-build dependencies
+      run: yarn install
+
+    - name: Cocoapods install
+      working-directory: test/VoiceProcessorTestApp/ios
+      run: pod install
+
+    - name: Build tests
+      run: detox build --configuration ios.sim.release
+
+    - name: Run tests
+      run: detox test --configuration ios.sim.release

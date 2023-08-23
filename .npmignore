@@ -70,3 +70,5 @@ codorials
 .nyc_output
 **/__tests__
 pkg
+
+test/
