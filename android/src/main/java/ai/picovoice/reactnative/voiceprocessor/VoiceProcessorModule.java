@@ -134,23 +134,23 @@ public class VoiceProcessorModule extends ReactContextBaseJavaModule {
         } else {
             if (this.getCurrentActivity() != null) {
                 ((PermissionAwareActivity) this.getCurrentActivity()).requestPermissions(
-                    new String[]{Manifest.permission.RECORD_AUDIO},
+                        new String[]{Manifest.permission.RECORD_AUDIO},
                         RECORD_AUDIO_REQUEST_CODE,
-                    new PermissionListener() {
-                        public boolean onRequestPermissionsResult(final int requestCode,
-                                                                  @NonNull final String[] permissions,
-                                                                  @NonNull final int[] grantResults) {
-                            if (requestCode == RECORD_AUDIO_REQUEST_CODE &&
-                                    grantResults.length > 0 &&
-                                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                                promise.resolve(true);
-                                return true;
-                            } else {
-                                promise.resolve(false);
-                                return false;
+                        new PermissionListener() {
+                            public boolean onRequestPermissionsResult(final int requestCode,
+                                                                      @NonNull final String[] permissions,
+                                                                      @NonNull final int[] grantResults) {
+                                if (requestCode == RECORD_AUDIO_REQUEST_CODE &&
+                                        grantResults.length > 0 &&
+                                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                                    promise.resolve(true);
+                                    return true;
+                                } else {
+                                    promise.resolve(false);
+                                    return false;
+                                }
                             }
-                        }
-                    });
+                        });
             } else {
                 promise.reject(
                         "PV_AUDIO_RECORDER_ERROR",
