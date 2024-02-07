@@ -7,13 +7,13 @@ on:
     paths:
       - '**'
       - '!README.md'
-      - '!example/README.md'
+      - '!example/**'
   pull_request:
     branches: [ main, 'v[0-9]+.[0-9]+' ]
     paths:
       - '**'
       - '!README.md'
-      - '!example/README.md'
+      - '!example/**'
 
 defaults:
   run:

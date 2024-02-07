@@ -11,8 +11,22 @@ buildscript {
         google()
         mavenCentral()
     }
+
+    def localProperties = new Properties()
+    def localPropertiesFile = rootProject.file('local.properties')
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.withReader('UTF-8') { reader ->
+            localProperties.load(reader)
+        }
+    }
+
+    def agpVersion = localProperties.getProperty('agpVersion')
+    if (agpVersion == null) {
+        agpVersion = '7.4.2'
+    }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath "com.android.tools.build:gradle:$agpVersion"
         classpath 'com.facebook.react:react-native-gradle-plugin'
     }
 }
