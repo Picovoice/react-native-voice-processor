@@ -1,5 +1,5 @@
 //
-// Copyright 2020-2023 Picovoice Inc.
+// Copyright 2020-2024 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -22,24 +22,28 @@ class PvVoiceProcessor: RCTEventEmitter {
     private var settingsLock = NSLock()
     private var isSettingsErrorReported = false
 
-    private let FRAME_EMITTER_KEY = "frame_sent"
-    private let ERROR_EMITTER_KEY = "error_sent"
+    private let frameEmitterKey = "frame_sent"
+    private let errorEmitterKey = "error_sent"
 
     public override init() {
         super.init()
         voiceProcessor.addFrameListener(VoiceProcessorFrameListener({ frame in
-            self.sendEvent(withName: self.FRAME_EMITTER_KEY, body: Array(frame))
+            DispatchQueue.main.async {
+                self.sendEvent(withName: self.frameEmitterKey, body: Array(frame))
+            }
         }))
 
         voiceProcessor.addErrorListener(VoiceProcessorErrorListener({ error in
-            self.sendEvent(withName: self.ERROR_EMITTER_KEY, body: error.errorDescription)
+            DispatchQueue.main.async {
+                self.sendEvent(withName: self.errorEmitterKey, body: error.errorDescription)
+            }
         }))
     }
 
     override func supportedEvents() -> [String]! {
         [
-            FRAME_EMITTER_KEY,
-            ERROR_EMITTER_KEY
+            frameEmitterKey,
+            errorEmitterKey
         ]
     }
 
@@ -49,8 +53,8 @@ class PvVoiceProcessor: RCTEventEmitter {
 
     @objc override func constantsToExport() -> [AnyHashable: Any] {
         [
-            "FRAME_EMITTER_KEY": FRAME_EMITTER_KEY,
-            "ERROR_EMITTER_KEY": ERROR_EMITTER_KEY
+            "frameEmitterKey": frameEmitterKey,
+            "errorEmitterKey": errorEmitterKey
         ]
     }
 
@@ -117,7 +121,7 @@ class PvVoiceProcessor: RCTEventEmitter {
                 AVAudioSession.sharedInstance().category != AVAudioSession.Category.playAndRecord {
             if !isSettingsErrorReported {
                 self.sendEvent(
-                        withName: ERROR_EMITTER_KEY,
+                        withName: errorEmitterKey,
                         body: "Audio settings have been changed and Picovoice is no longer receiving microphone audio.")
                 isSettingsErrorReported = true
             }
