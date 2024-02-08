@@ -87,33 +87,33 @@ jobs:
       run: ./gradlew assembleDebug
       working-directory: example/android
 
-  # build-ios:
-  #   runs-on: macos-latest
+  build-ios:
+    runs-on: macos-latest
 
-  #   strategy:
-  #     matrix:
-  #       node-version: [16.x, 18.x, 20.x]
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
 
-  #   steps:
-  #   - uses: actions/checkout@v3
+    steps:
+    - uses: actions/checkout@v3
 
-  #   - name: Use Node.js ${{ matrix.node-version }}
-  #     uses: actions/setup-node@v3
-  #     with:
-  #       node-version: ${{ matrix.node-version }}
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
 
-  #   - name: Install dependencies
-  #     run: yarn bootstrap
+    - name: Install dependencies
+      run: yarn bootstrap
 
-  #   - name: Build bundle
-  #     run: yarn example ios-bundle
+    - name: Build bundle
+      run: yarn example ios-bundle
 
-  #   - name: Build
-  #     run: xcrun xcodebuild build
-  #       -configuration Debug
-  #       -workspace VoiceProcessorExample.xcworkspace
-  #       -sdk iphoneos
-  #       -scheme VoiceProcessorExample
-  #       -derivedDataPath ddp
-  #       CODE_SIGNING_ALLOWED=NO
-  #     working-directory: example/ios
+    - name: Build
+      run: xcrun xcodebuild build
+        -configuration Debug
+        -workspace VoiceProcessorExample.xcworkspace
+        -sdk iphoneos
+        -scheme VoiceProcessorExample
+        -derivedDataPath ddp
+        CODE_SIGNING_ALLOWED=NO
+      working-directory: example/ios
