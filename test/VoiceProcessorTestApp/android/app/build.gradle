@@ -102,7 +102,6 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "ai.picovoice.voiceprocessortestapp"
     defaultConfig {
         applicationId "ai.picovoice.voiceprocessortestapp"
         minSdkVersion rootProject.ext.minSdkVersion

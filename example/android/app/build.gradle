@@ -101,7 +101,6 @@ android {
     }
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "ai.picovoice.reactnative.voiceprocessorexample"
     defaultConfig {
         applicationId "ai.picovoice.reactnative.voiceprocessorexample"
         minSdkVersion rootProject.ext.minSdkVersion
