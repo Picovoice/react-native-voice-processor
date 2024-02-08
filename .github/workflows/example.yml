@@ -102,6 +102,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Setup Cocoapods 1.14.3
+      uses: maxim-lobanov/setup-cocoapods@v1
+      with:
+        version: 1.14.3
+
     - name: Install dependencies
       run: yarn bootstrap
 
