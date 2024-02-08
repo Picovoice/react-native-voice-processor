@@ -64,6 +64,11 @@ jobs:
     - name: Install dependencies
       run: yarn bootstrap
 
+    - name: Upgrade React Native and settings.gradle
+      if: ${{ (matrix.gradle-version == '8.2')}}
+      run: yarn upgrade react-native@0.72.10 && cp ../resources/.test/settings_8.2.gradle android/settings.gradle
+      working-directory: example
+
     - name: Generate gradle wrapper
       run: gradle wrapper --gradle-version ${{ matrix.gradle-version }} --distribution-type all
       working-directory: example/android
