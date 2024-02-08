@@ -73,7 +73,7 @@ async function basicTest(): Promise<Result> {
       };
     }
 
-    await new Promise(r => setTimeout(r, 10000));
+    await new Promise(r => setTimeout(r, 3000));
 
     await _vp?.stop();
     if (!result.success && result.errorString) {
