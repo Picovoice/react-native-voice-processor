@@ -53,8 +53,8 @@ class PvVoiceProcessor: RCTEventEmitter {
 
     @objc override func constantsToExport() -> [AnyHashable: Any] {
         [
-            "frameEmitterKey": frameEmitterKey,
-            "errorEmitterKey": errorEmitterKey
+            "FRAME_EMITTER_KEY": frameEmitterKey,
+            "ERROR_EMITTER_KEY": errorEmitterKey
         ]
     }
 

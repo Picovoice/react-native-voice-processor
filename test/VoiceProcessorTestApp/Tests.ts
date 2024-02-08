@@ -31,7 +31,6 @@ async function basicTest(): Promise<Result> {
     testName: 'Basic test',
     success: false,
   };
-  console.log('ho');
   let frameCount = 0;
   let errorCount = 0;
 
@@ -74,7 +73,7 @@ async function basicTest(): Promise<Result> {
       };
     }
 
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise(r => setTimeout(r, 10000));
 
     await _vp?.stop();
     if (!result.success && result.errorString) {
