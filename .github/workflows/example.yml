@@ -23,20 +23,23 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [16.x, 18.x, 20.x]
         include:
-        # - node-version: 16.x
-        #   gradle-version: 6.5
-        #   agp-version: 4.1.3
-        #   java-version: 11
+        - node-version: 16.x
+          gradle-version: 6.5
+          agp-version: 4.1.3
+          java-version: 11
+          rn-versions: 0.69.12
         - node-version: 18.x
           gradle-version: 7.5
           agp-version: 7.4.2
           java-version: 11
+          rn-versions: 0.71.12
         - node-version: 20.x
           gradle-version: 8.2
           agp-version: 8.2.2
           java-version: 17
+          rn-versions: 0.72.10
 
     steps:
     - uses: actions/checkout@v3
@@ -64,9 +67,13 @@ jobs:
     - name: Install dependencies
       run: yarn bootstrap
 
-    - name: Upgrade React Native and settings.gradle
+    - name: Change React Native versions
+      run: yarn upgrade react-native@${{ matrix.rn-version }}
+      working-directory: example
+
+    - name: Copy gradle settings
       if: ${{ (matrix.gradle-version == '8.2')}}
-      run: yarn upgrade react-native@0.72.10 && cp ../resources/.test/settings_8.2.gradle android/settings.gradle
+      run: cp ../resources/.test/settings_8.2.gradle android/settings.gradle
       working-directory: example
 
     - name: Generate gradle wrapper
