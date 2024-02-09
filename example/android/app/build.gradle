@@ -89,9 +89,18 @@ def reactNativeArchitectures() {
 }
 
 android {
+    def agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
+    if (agpVersion.tokenize('.')[0].toInteger() >= 7) {
+        namespace "ai.picovoice.reactnative.voiceprocessorexample"
+    }
+
+    if (agpVersion.tokenize('.')[0].toInteger() >= 8) {
+        buildFeatures {
+            buildConfig = true
+        }
+    }
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "ai.picovoice.reactnative.voiceprocessorexample"
     defaultConfig {
         applicationId "ai.picovoice.reactnative.voiceprocessorexample"
         minSdkVersion rootProject.ext.minSdkVersion

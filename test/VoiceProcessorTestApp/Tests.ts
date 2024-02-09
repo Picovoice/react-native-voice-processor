@@ -31,7 +31,6 @@ async function basicTest(): Promise<Result> {
     testName: 'Basic test',
     success: false,
   };
-  console.log('ho');
   let frameCount = 0;
   let errorCount = 0;
 

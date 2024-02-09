@@ -1,0 +1,1 @@
+cp settings.gradle ../../../example/android/settings.gradle
