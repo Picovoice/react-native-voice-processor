@@ -40,7 +40,7 @@ data to the user via listeners.
 
 - React Native 0.68.7+
 - Android 5.0+ (API 21+)
-- iOS 11.0+
+- iOS 13.0+
 
 ## Installation
 
