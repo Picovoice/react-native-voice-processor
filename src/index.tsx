@@ -11,8 +11,8 @@
 
 import {
   VoiceProcessor,
-  VoiceProcessorFrameListener,
-  VoiceProcessorErrorListener,
+  type VoiceProcessorFrameListener,
+  type VoiceProcessorErrorListener,
 } from './voice_processor';
 
 import { VoiceProcessorError } from './voice_processor_errors';
@@ -20,6 +20,6 @@ import { VoiceProcessorError } from './voice_processor_errors';
 export {
   VoiceProcessor,
   VoiceProcessorError,
-  VoiceProcessorErrorListener,
-  VoiceProcessorFrameListener,
+  type VoiceProcessorErrorListener,
+  type VoiceProcessorFrameListener,
 };

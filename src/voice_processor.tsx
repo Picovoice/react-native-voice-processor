@@ -192,6 +192,6 @@ class VoiceProcessor {
 
 export {
   VoiceProcessor,
-  VoiceProcessorFrameListener,
-  VoiceProcessorErrorListener,
+  type VoiceProcessorFrameListener,
+  type VoiceProcessorErrorListener,
 };
