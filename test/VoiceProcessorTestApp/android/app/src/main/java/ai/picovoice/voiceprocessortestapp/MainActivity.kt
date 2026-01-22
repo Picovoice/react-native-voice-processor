@@ -1,4 +1,4 @@
-package com.voiceprocessortestapp
+package ai.picovoice.voiceprocessortestapp
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
