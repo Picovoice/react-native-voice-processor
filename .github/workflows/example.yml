@@ -26,9 +26,9 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
         include:
         - node-version: 18.x
-          gradle-version: 7.5
-          agp-version: 7.4.2
-          java-version: 11
+          gradle-version: 8.2
+          agp-version: 8.2.2
+          java-version: 17
         - node-version: 20.x
           gradle-version: 8.2
           agp-version: 8.2.2
