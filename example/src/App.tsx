@@ -9,9 +9,9 @@
 // specific language governing permissions and limitations under the License.
 //
 
-import React, { Component } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import Svg, { Rect } from 'react-native-svg';
+import React, {Component} from 'react';
+import {Button, StyleSheet, Text, View} from 'react-native';
+import Svg, {Rect} from 'react-native-svg';
 
 import {
   VoiceProcessor,
@@ -50,7 +50,7 @@ export default class App extends Component<Props, State> {
 
     this._voiceProcessor = VoiceProcessor.instance;
     this._voiceProcessor.addFrameListener((frame: number[]) => {
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         volumeHistory: [
           ...prevState.volumeHistory.splice(1),
           this.calculateVolume(frame),
@@ -69,7 +69,7 @@ export default class App extends Component<Props, State> {
       const volumeAvg =
         [...this.state.volumeHistory].reduce(
           (accumulator, value) => accumulator + value,
-          0
+          0,
         ) / this._volumeHistoryCapacity;
       this.setState({
         vuMeterWidthPercent: volumeAvg * 100,
@@ -128,7 +128,7 @@ export default class App extends Component<Props, State> {
   calculateVolume(frame: number[]): number {
     const sum = [...frame].reduce(
       (accumulator, sample) => accumulator + sample ** 2,
-      0
+      0,
     );
     const rms = Math.sqrt(sum / frame.length) / 32767.0;
     const dbfs = 20 * Math.log10(Math.max(rms, 1e-9));
