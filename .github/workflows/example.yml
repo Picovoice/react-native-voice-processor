@@ -29,17 +29,14 @@ jobs:
           gradle-version: 7.5
           agp-version: 7.4.2
           java-version: 11
-          rn-version: 0.71.12
         - node-version: 20.x
           gradle-version: 8.2
           agp-version: 8.2.2
           java-version: 17
-          rn-version: 0.72.10
         - node-version: 22.x
           gradle-version: 8.2
           agp-version: 8.2.2
           java-version: 17
-          rn-version: 0.72.10
 
     steps:
     - uses: actions/checkout@v3
@@ -66,10 +63,6 @@ jobs:
 
     - name: Install dependencies
       run: yarn bootstrap
-
-    - name: Change React Native versions
-      run: yarn upgrade react-native@${{ matrix.rn-version }}
-      working-directory: example
 
     - name: Copy project files
       if: ${{ (matrix.gradle-version == '8.2') || (matrix.gradle-version == '6.5')}}

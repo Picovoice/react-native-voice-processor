@@ -8,7 +8,7 @@
     "ios": "react-native run-ios",
     "ios-bundle": "react-native bundle --dev false --platform ios --entry-file index.js --bundle-output ios/app.jsbundle",
     "start": "react-native start",
-    "test": "jest"
+    "pods": "pod-install --quiet"
   },
   "dependencies": {
     "@picovoice/react-native-voice-processor": "^1.2.3",
