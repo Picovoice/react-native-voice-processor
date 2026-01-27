@@ -3,7 +3,7 @@
 [![GitHub release](https://img.shields.io/github/release/Picovoice/react-native-voice-processor.svg)](https://github.com/Picovoice/react-native-voice-processor/releases)
 [![GitHub](https://img.shields.io/github/license/Picovoice/react-native-voice-processor.svg)](https://github.com/Picovoice/react-native-voice-processor)
 
-[![npm](https://img.shields.io/npm/v/@picovoice/react-native-voice-processor)](https://www.npmjs.com/package/@picovoice/react-native-voice-processor)
+[![npm](https://img.shields.io/npm/v/@picovoice/react-native-voice-processor)](https://www.npmjs.com/package/@picovoice/react-native-voice-processor)<!-- markdown-link-check-disable-line -->
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
@@ -27,6 +27,10 @@ data to the user via listeners.
   - [Usage](#usage)
     - [Capturing with Multiple Listeners](#capturing-with-multiple-listeners)
   - [Example](#example)
+  - [Releases](#releases)
+    - [v1.2.0 - August 11, 2023](#v120---august-11-2023)
+    - [v1.1.0 - February 23, 2023](#v110---february-23-2023)
+    - [v1.0.0 - March 29, 2021](#v100---march-29-2021)
 
 ## Requirements
 
@@ -44,7 +48,7 @@ data to the user via listeners.
 
 ## Installation
 
-React Native Voice Processor is available via [npm](https://www.npmjs.com/package/@picovoice/react-native-voice-processor).
+React Native Voice Processor is available via [npm](https://www.npmjs.com/package/@picovoice/react-native-voice-processor).<!-- markdown-link-check-disable-line -->
 To import it into your React Native project install with npm or yarn:
 ```console
 yarn add @picovoice/react-native-voice-processor

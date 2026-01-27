@@ -5,7 +5,7 @@ the `VoiceProcessor`.
 
 ## Requirements
 
-- [Node.js](https://nodejs.org) (16+)
+- [Node.js](https://nodejs.org) (18+)
 - [Android SDK](https://developer.android.com/about/versions/12/setup-sdk) (21+)
 - [JDK](https://www.oracle.com/java/technologies/downloads/) (8+)
 - [Xcode](https://developer.apple.com/xcode/) (11+)
