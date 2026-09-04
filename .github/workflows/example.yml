@@ -81,7 +81,7 @@ jobs:
       working-directory: example/android
 
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-14
 
     strategy:
       matrix:
